@@ -1,10 +1,10 @@
-import torch.nn.functional as F
 import torch.nn as nn
 import torch
 import numpy as np
 from torchvision import datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
+from models import LinearAutoencoder
 
 # convert to tensor
 transform = transforms.ToTensor()
@@ -25,28 +25,10 @@ train_loader = torch.utils.data.DataLoader(
 test_loader = torch.utils.data.DataLoader(
     test_data, batch_size=batch_size, num_workers=num_workers)
 
-# Linear autoencoder
-
-
-class Autoencoder(nn.Module):
-    def __init__(self, encoding_dim):
-        super(Autoencoder, self).__init__()
-
-        # encoder
-        # linear layer
-        self.fc1 = nn.Linear(28*28, encoding_dim)
-        # decoder
-        self.fc2 = nn.Linear(encoding_dim, 28*28)
-
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = torch.sigmoid(self.fc2(x))
-        return x
-
 
 # initialize model
 encoding_dim = 32
-model = Autoencoder(encoding_dim)
+model = LinearAutoencoder(encoding_dim)
 print(model)
 
 # training
