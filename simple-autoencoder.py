@@ -4,6 +4,7 @@ import torch
 import numpy as np
 from torchvision import datasets
 import torchvision.transforms as transforms
+import matplotlib.pyplot as plt
 
 # convert to tensor
 transform = transforms.ToTensor()
@@ -70,3 +71,24 @@ for epoch in range(1, epochs+1):
     # print some training stats
     train_loss = train_loss/len(train_loader)
     print(f'Epoch: {epoch} \tTraining Loss: {train_loss:.4f}')
+
+
+# Visualize results
+
+dataiter = iter(test_loader)
+images, labels = dataiter.next()
+
+img_flatten = images.view(images.size(0), -1)
+output = model(img_flatten)
+images = images.numpy()
+
+output = output.detach().numpy()
+
+# Plot [0] input images and the reconstructed images
+fig, axes = plt.subplots(nrows=2, ncols=10, sharex=True,
+                         sharey=True, figsize=(25, 4))
+for images, row in zip([images, output], axes):
+    for img, ax in zip(images, row):
+        ax.imshow(np.squeeze(img), cmap='gray')
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
