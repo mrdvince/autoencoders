@@ -39,7 +39,7 @@ class Autoencoder(nn.Module):
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
-        x = F.sigmoid(self.fc2(x))
+        x = torch.sigmoid(self.fc2(x))
         return x
 
 
@@ -47,3 +47,26 @@ class Autoencoder(nn.Module):
 encoding_dim = 32
 model = Autoencoder(encoding_dim)
 print(model)
+
+# training
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+epochs = 20
+for epoch in range(1, epochs+1):
+    # monitor loss
+    train_loss = 0.0
+
+    for data in train_loader:
+        images, _ = data
+        # flatten
+        images = images.view(images.size(0), -1)
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, images)
+        loss.backward()
+        optimizer.step()
+        train_loss += loss.item()*images.size(0)
+    # print some training stats
+    train_loss = train_loss/len(train_loader)
+    print(f'Epoch: {epoch} \tTraining Loss: {train_loss:.4f}')
