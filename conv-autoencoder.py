@@ -41,19 +41,33 @@ class ConvAutoencoder(nn.Module):
         # maxpool
         self.pool = nn.MaxPool2d(2, 2)
 
-        # decoder layers
-        self.t_conv1 = nn.ConvTranspose2d(4, 16, 2, stride=2)
-        self.t_conv2 = nn.ConvTranspose2d(16, 1, 2, stride=2)
+        # # decoder layers
+        # self.t_conv1 = nn.ConvTranspose2d(4, 16, 2, stride=2)
+        # self.t_conv2 = nn.ConvTranspose2d(16, 1, 2, stride=2)
+        # Alternarive to using transpose convolutions
+        self.conv3 = nn.Conv2d(4, 16, 3, padding=1)
+        self.conv4 = nn.Conv2d(16, 1, 3, padding=1)
 
     def forward(self, x):
-        # encode
+        # # encode
+        # x = F.relu(self.conv1(x))
+        # x = self.pool(x)
+        # x = F.relu(self.conv2(x))
+        # x = self.pool(x)
+        # # decode
+        # x = F.relu(self.t_conv1(x))
+        # x = torch.sigmoid(self.t_conv2(x))
         x = F.relu(self.conv1(x))
         x = self.pool(x)
         x = F.relu(self.conv2(x))
         x = self.pool(x)
-        # decode
-        x = F.relu(self.t_conv1(x))
-        x = torch.sigmoid(self.t_conv2(x))
+        # decoder
+        # using upsampling
+        x = F.upsample(x, scale_factor=2, mode='nearest')
+        x = F.relu(self.conv3(x))
+        # Upsample again
+        x = F.upsample(x, scale_factor=2, mode='nearest')
+        x = torch.sigmoid(self.conv4(x))
         return x
 
 
