@@ -63,10 +63,10 @@ class ConvAutoencoder(nn.Module):
         x = self.pool(x)
         # decoder
         # using upsampling
-        x = F.upsample(x, scale_factor=2, mode='nearest')
+        x = F.interpolate(x, scale_factor=2, mode='nearest')
         x = F.relu(self.conv3(x))
         # Upsample again
-        x = F.upsample(x, scale_factor=2, mode='nearest')
+        x = F.interpolate(x, scale_factor=2, mode='nearest')
         x = torch.sigmoid(self.conv4(x))
         return x
 
