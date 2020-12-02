@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch
 import numpy as np
 from torchvision import datasets
-import torchvision.transfroms as transforms
+import torchvision.transforms as transforms
 
 # convert to tensor
 transform = transforms.ToTensor()
@@ -29,7 +29,7 @@ test_loader = torch.utils.data.DataLoader(
 
 class Autoencoder(nn.Module):
     def __init__(self, encoding_dim):
-        super(Autoencoder, self).__init()__
+        super(Autoencoder, self).__init__()
 
         # encoder
         # linear layer
